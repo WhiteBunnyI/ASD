@@ -345,7 +345,7 @@ namespace asd
 
 	void lab12(std::string filename)
 	{
-		const size_t read = 2;
+		const size_t read = 4096;
 
 		std::ifstream input1(filename);
 		std::ifstream input2;
@@ -391,39 +391,47 @@ namespace asd
 				int t1;
 				int t2;
 
-				if (isOpen1)
-					input1 >> t1;
-				if (isOpen2)
-					input2 >> t2;
+				bool isRead1 = true;
+				bool isRead2 = true;
 
 				while (isOpen1 || isOpen2)
 				{
+					if (isRead1)
+					{
+						input1 >> t1;
+						isRead1 = false;
+						isOpen1 = !input1.eof();
+					}
+					if (isRead2)
+					{
+						input2 >> t2;
+						isRead2 = false;
+						isOpen2 = !input2.eof();
+					}
 					if (isOpen1 && isOpen2)
 					{
 						if (t1 < t2)
 						{
+							isRead1 = true;
 							out << t1 << ' ';
-							input1 >> t1;
 						}
 						else
 						{
+							isRead2 = true;
 							out << t2 << ' ';
-							input2 >> t2;
 						}
 					}
 					else if (isOpen1)
 					{
+						isRead1 = true;
 						out << t1 << ' ';
-						input1 >> t1;
 					}
 					else if (isOpen2)
 					{
+						isRead2 = true;
 						out << t2 << ' ';
-						input2 >> t2;
 					}
 
-					isOpen1 = !input1.eof();
-					isOpen2 = !input2.eof();
 				}
 				input1.close();
 				input2.close();
@@ -431,12 +439,14 @@ namespace asd
 			}
 			if (current % 2)
 			{
-				std::filesystem::rename("./tempDir/" + std::to_string(cycle) + "temp" + std::to_string(i), "./tempDir/" + std::to_string(cycle + 1) + "temp" + std::to_string(current / 2));
+				std::filesystem::rename("./tempDir/" + std::to_string(cycle) + "temp" + std::to_string(i*2), "./tempDir/" + std::to_string(cycle + 1) + "temp" + std::to_string(current / 2));
 				++current;
 			}
 			++cycle;
 			current /= 2;
 		}
 
+		std::filesystem::rename("./tempDir/" + std::to_string(cycle) + "temp" + '0', "./result.txt");
+		std::filesystem::remove_all("./tempDir");
 	}
 }

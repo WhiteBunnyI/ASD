@@ -5,10 +5,25 @@ int main()
 {
 	std::setlocale(LC_ALL, "rus");
 
+	//Внешняя многофазная
+
 	//100 000 
 	asd::lab12("sorting.txt");
+	std::ifstream input("./result.txt");
 
+	int prev;
+	input >> prev;
+	int current;
+
+	while (!input.eof())
+	{
+		input >> current;
+		if (prev > current)
+			std::cout << "Test failed! ";
+	}
 	return 0;
+	//Внешняя многофазная
+	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };
 	std::vector<int> data2{ 1,2,3,4,5,6,7,8,9,10 };
 	std::vector<int> data3{ 10,9,8,7,6,5,4,3,2,1 };
