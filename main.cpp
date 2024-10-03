@@ -18,9 +18,13 @@ int main()
 	while (!input.eof())
 	{
 		input >> current;
-		if (prev > current)
-			std::cout << "Test failed! ";
+		if (prev >= current)
+		{
+			std::cout << "Test failed!\n";
+			return 0;
+		}
 	}
+	std::cout << "Test complete!\n";
 	return 0;
 	//Внешняя многофазная
 	

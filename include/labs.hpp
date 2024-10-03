@@ -351,28 +351,31 @@ namespace asd
 		std::ifstream input2;
 		std::ofstream out;
 
-		std::vector<int> temp(read);
+		std::vector<int> temp;
 		size_t current = 0;
 
 		std::filesystem::create_directory("./tempDir/");
 
-		auto cp = std::filesystem::current_path();
-		cp.append("tempDir");
-
 		while (!input1.eof())
 		{
-			for (size_t i = 0; i < read; i++)
+			temp.resize(read);
+			size_t count = 0;
+			for (; count < read && !input1.eof(); count++)
 			{
-				input1 >> temp[i];
+				input1 >> temp[count];
 			}
+
+			temp.resize(count);
 			lab10(temp);
 			out.open("./tempDir/0temp" + std::to_string(current));
 
-			for (size_t i = 0; i < read; i++)
+			for (size_t i = 0; i < count; i++)
 			{
 				out << temp[i] << ' ';
 			}
+
 			out.close();
+			temp.clear();
 			++current;
 		}
 		input1.close();
@@ -386,50 +389,42 @@ namespace asd
 				input1.open("./tempDir/" + std::to_string(cycle) + "temp" + std::to_string(i*2));
 				input2.open("./tempDir/" + std::to_string(cycle) + "temp" + std::to_string(i*2 + 1));
 				out.open("./tempDir/" + std::to_string(cycle + 1) + "temp" + std::to_string(i));
-				bool isOpen1 = !input1.eof();
-				bool isOpen2 = !input2.eof();
 				int t1;
 				int t2;
+				input1 >> t1;
+				input2 >> t2;
 
-				bool isRead1 = true;
-				bool isRead2 = true;
+				bool isOpen1 = !input1.eof();
+				bool isOpen2 = !input2.eof();
 
 				while (isOpen1 || isOpen2)
 				{
-					if (isRead1)
-					{
-						input1 >> t1;
-						isRead1 = false;
-						isOpen1 = !input1.eof();
-					}
-					if (isRead2)
-					{
-						input2 >> t2;
-						isRead2 = false;
-						isOpen2 = !input2.eof();
-					}
 					if (isOpen1 && isOpen2)
 					{
 						if (t1 < t2)
 						{
-							isRead1 = true;
 							out << t1 << ' ';
+							input1 >> t1;
+							isOpen1 = !input1.eof();
 						}
 						else
 						{
-							isRead2 = true;
 							out << t2 << ' ';
+							input2 >> t2;
+							isOpen2 = !input2.eof();
 						}
 					}
 					else if (isOpen1)
 					{
-						isRead1 = true;
 						out << t1 << ' ';
+						input1 >> t1;
+						isOpen1 = !input1.eof();
 					}
-					else if (isOpen2)
+					else
 					{
-						isRead2 = true;
 						out << t2 << ' ';
+						input2 >> t2;
+						isOpen2 = !input2.eof();
 					}
 
 				}
