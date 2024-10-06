@@ -444,4 +444,14 @@ namespace asd
 		std::filesystem::rename("./tempDir/" + std::to_string(cycle) + "temp" + '0', "./result.txt");
 		std::filesystem::remove_all("./tempDir");
 	}
+
+	void lab15(std::string str)
+	{
+		std::vector<int> temp;
+		for (size_t i = 0; i < str.size(); i++)
+		{
+
+		}
+
+	}
 }
