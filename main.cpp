@@ -1,6 +1,31 @@
 #include <labs.hpp>
 #include <functional>
 
+bool Check(std::vector<int>& data)
+{
+	bool isRight = true;
+	int prev = data[0];
+	for each (auto var in data)
+	{
+		std::cout << var << ' ';
+		if (prev > var)
+			isRight = false;
+	}
+	return isRight;
+}
+
+void Test(std::vector<int>& data)
+{
+	if (Check(data))
+	{
+		std::cout << "passed the test\n";
+	}
+	else
+	{
+		std::cout << "failed the test\n";
+	}
+}
+
 int main()
 {
 	std::setlocale(LC_ALL, "rus");
@@ -8,24 +33,24 @@ int main()
 	//Внешняя многофазная
 
 	//100 000 
-	asd::lab12("sorting.txt");
-	std::ifstream input("./result.txt");
+	//asd::lab12("sorting.txt");
+	//std::ifstream input("./result.txt");
 
-	int prev;
-	input >> prev;
-	int current;
+	//int prev;
+	//input >> prev;
+	//int current;
 
-	while (!input.eof())
-	{
-		input >> current;
-		if (prev >= current)
-		{
-			std::cout << "Test failed!\n";
-			return 0;
-		}
-	}
-	std::cout << "Test complete!\n";
-	return 0;
+	//while (!input.eof())
+	//{
+	//	input >> current;
+	//	if (prev >= current)
+	//	{
+	//		std::cout << "Test failed!\n";
+	//		return 0;
+	//	}
+	//}
+	//std::cout << "Test complete!\n";
+	//return 0;
 	//Внешняя многофазная
 	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };
@@ -42,33 +67,10 @@ int main()
 	func(data4);
 	func(data5);
 
-	for each (auto var in data1)
-	{
-		std::cout << var << ' ';
-	}
-	std::cout << std::endl;
+	Test(data1);
+	Test(data2);
+	Test(data3);
+	Test(data4);
+	Test(data5);
 
-	for each (auto var in data2)
-	{
-		std::cout << var << ' ';
-	}
-	std::cout << std::endl;
-
-	for each (auto var in data3)
-	{
-		std::cout << var << ' ';
-	}
-	std::cout << std::endl;
-
-	for each (auto var in data4)
-	{
-		std::cout << var << ' ';
-	}
-	std::cout << std::endl;
-
-	for each (auto var in data5)
-	{
-		std::cout << var << ' ';
-	}
-	std::cout << std::endl;
 }

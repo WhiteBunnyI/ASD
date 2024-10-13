@@ -310,37 +310,32 @@ namespace asd
 		}
 	}
 
-	//Необходимо изменить проверку с опорным элементом
-	using ss = std::pair<size_t, size_t>;
+	void QuickSort(std::vector<int>& data, size_t first, size_t last)
+	{
+		if (last - first <= 1) return;
+		size_t pivot = last - 1;
+		size_t wall = first;
+
+		for (size_t i = first; i < last; i++)
+		{
+			if (data[pivot] > data[i])
+			{
+				std::swap(data[wall], data[i]);
+				++wall;
+				continue;
+			}
+
+		}
+
+		std::swap(data[wall], data[pivot]);
+
+		QuickSort(data, first, wall);
+		QuickSort(data, wall + 1, last);
+	}
+
 	void lab11(std::vector<int>& data)
 	{
-		Stack<ss> stack;
-
-		stack.Push(ss(0, data.size()));
-
-		while (stack.Top() != nullptr)
-		{
-			ss current = *stack.Top();
-			stack.Pop();
-
-			size_t support = current.second - 1;
-			size_t i = current.first;
-			for (; i < support; i++)
-			{
-				std::swap(data[support - 1], data[support]);
-				--support;
-				if (i != support && data[i] >= data[support])
-					std::swap(data[support + 1], data[i]);
-			}
-			if (current.first != i)
-			{
-				stack.Push(ss(current.first, support));
-			}
-			if (support + 1 != current.second)
-			{
-				stack.Push(ss(support + 1, current.second));
-			}
-		}
+		QuickSort(data, 0, data.size());
 	}	
 
 	void lab12(std::string filename)
