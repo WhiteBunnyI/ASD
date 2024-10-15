@@ -14,26 +14,24 @@ using ullong = unsigned long long;
 
 namespace asd
 {
-	void lab1()
+	bool lab1(std::string& str)
 	{
 		asd::Stack<char> stack;
 
-		std::cout << "Введите строку:\n";
-
 		//std::string str = "(){}[]()(()){()()}(([]))()()()(())()";
 
-		char str[10000];
-		std::cin.getline(str, 10000);
-		int len = std::strlen(str);
+		//char str[10000];
+		//std::cin.getline(str, 10000);
+		//int len = std::strlen(str);
 
-		if (len == 0)
+		if (str.size() == 0)
 		{
 			std::cout << "Строки не существует\n";
-			return;
+			return false;
 		}
 
 		int i;
-		for (i = 0; i < len; i++)
+		for (i = 0; i < str.size(); i++)
 		{
 			char chr = str[i];
 			if (chr == '(' || chr == '{' || chr == '[')
@@ -69,13 +67,14 @@ namespace asd
 
 
 		//Прочитали все строку и ничего не осталось в стеке
-		if (i == len && stack.Top() == nullptr)
+		if (i == str.size() && stack.Top() == nullptr)
 		{
-			std::cout << "Строка правильная\n";
-			return;
+			//std::cout << "Строка правильная\n";
+			return true;
 		}
 
-		std::cout << "Строка неправильная\n";
+		//std::cout << "Строка неправильная\n";
+		return false;
 	}
 
 	bool compareLab3(std::pair<std::string, ullong>& left, std::pair<std::string, ullong>& right)
@@ -270,8 +269,8 @@ namespace asd
 			size_t size = 2 * i;
 			for (size_t o = 0; o < count; o += size) //Текущий левый массив
 			{
-				size_t left = o;
-				size_t right = left + i;
+				size_t left = o;					//левая граница левого массива
+				size_t right = left + i;			//левая граница правого массива
 				size_t leftEnd = right;
 				size_t rightEnd = right + i;
 				bool rightValid = right != rightEnd && right < count;
@@ -448,5 +447,168 @@ namespace asd
 
 		}
 
+	}
+
+	void lab2(std::string& str)
+	{
+		auto contain = [](char* chars, char chr)
+			{
+				for (size_t i = 0; chars[i] != '\0'; i++)
+				{
+					if (chars[i] == chr)
+						return true;
+				}
+
+				return false;
+			};
+
+		auto GetNum = [&contain](std::string& str, size_t& index)
+			{
+				std::string result;
+				if (str[index] == '-')
+				{
+					result += '-';
+					++index;
+				}
+				while (contain("0123456789", str[index]))
+				{
+					result += str[index];
+					++index;
+				}
+				return result;
+			};
+
+		if (!lab1(str))
+		{
+			std::cout << "Строка неправильная\n";
+			return;
+		}
+		//Пройти проверки
+		std::string main;
+		Stack<char> stack;
+
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			const char* t;
+			switch (str[i])
+			{
+			case '*':
+			case '/':
+				t = stack.Top();
+				while (t)
+				{
+					if (*t == '(')
+						break;
+					if (*t == '*' || *t == '/')
+					{
+						main += *t;
+						main += ' ';
+						stack.Pop();
+						t = stack.Top();
+						continue;
+					}
+					break;
+				}
+				stack.Push(str[i]);
+				break;
+
+			case '+':
+			case '-':
+				if (i == 0 || str[i-1] == '(')
+				{
+					main += GetNum(str, i) + " ";
+					--i;
+					continue;
+				}
+				t = stack.Top();
+				while (t)
+				{
+					if (*t == '(')
+						break;
+					main += *t;
+					main += ' ';
+					stack.Pop();
+					t = stack.Top();
+				}
+				stack.Push(str[i]);
+				break;
+
+			case '(':
+				
+				stack.Push(str[i]);
+				break;
+
+			case ')':
+				t = stack.Top();
+				while (*t != '(')
+				{
+					main += *stack.Top();
+					main += ' ';
+
+					stack.Pop();
+					t = stack.Top();
+				}
+				stack.Pop();
+				break;
+
+			case '=':
+				i = str.size();
+				break;
+
+			default:
+				main += GetNum(str, i) + " ";
+				--i;
+				break;
+			}
+		}
+
+		while (stack.Top())
+		{
+			main += *stack.Top();
+			main += ' ';
+			stack.Pop();
+		}
+		std::cout << main << std::endl;
+		Stack<float> temp;
+		float num1;
+		float num2;
+		for (size_t i = 0; i < main.size(); i++)
+		{
+			if (main[i] == ' ')
+				continue;
+
+			if (!(main[i] == '-' && main[i + 1] == ' ') && !contain("*/+", main[i]))
+			{
+				num1 = std::stoi(GetNum(main, i));
+				temp.Push(num1);
+				continue;
+			}
+
+			num2 = *temp.Top();
+			temp.Pop();
+			num1 = *temp.Top();
+			temp.Pop();
+
+			switch (main[i])
+			{
+			case '*':
+				temp.Push(num1 * num2);
+				break;
+
+			case '/':
+				temp.Push(num1 / num2);
+				break;
+
+			case '-':
+				temp.Push(num1 - num2);
+				break;
+
+			case '+':
+				temp.Push(num1 + num2);
+				break;
+			}
+
+		}
+		std::cout << *temp.Top();
 	}
 }

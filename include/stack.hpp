@@ -19,8 +19,6 @@ namespace asd
 	public:
 		Node* start{ nullptr };
 
-	public:
-
 		Stack() = default;
 		~Stack()
 		{
@@ -66,9 +64,7 @@ namespace asd
 		{
 			Node* current = start;
 			start = current->next;
-
 			delete current;
 		}
-
 	};
 }

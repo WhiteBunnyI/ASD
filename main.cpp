@@ -18,40 +18,52 @@ void Test(std::vector<int>& data)
 {
 	if (Check(data))
 	{
-		std::cout << "passed the test\n";
+		std::cout << "\tpassed the test\n";
 	}
 	else
 	{
-		std::cout << "failed the test\n";
+		std::cout << "\tfailed the test\n";
 	}
+}
+
+void Test12Lab()
+{
+	//Внешняя многофазная
+
+	//100 000 
+	asd::lab12("sorting.txt");
+	std::ifstream input("./result.txt");
+
+	int prev;
+	input >> prev;
+	int current;
+
+	while (!input.eof())
+	{
+		input >> current;
+		if (prev >= current)
+		{
+			std::cout << "Test failed!\n";
+			return;
+		}
+	}
+	std::cout << "Test complete!\n";
+	//Внешняя многофазная
+}
+
+void Test2Lab()
+{
+	std::string str = "-20+7*(3/9)-(-5)*(0-1)=";
+	asd::lab2(str);
 }
 
 int main()
 {
 	std::setlocale(LC_ALL, "rus");
 
-	//Внешняя многофазная
-
-	//100 000 
-	//asd::lab12("sorting.txt");
-	//std::ifstream input("./result.txt");
-
-	//int prev;
-	//input >> prev;
-	//int current;
-
-	//while (!input.eof())
-	//{
-	//	input >> current;
-	//	if (prev >= current)
-	//	{
-	//		std::cout << "Test failed!\n";
-	//		return 0;
-	//	}
-	//}
-	//std::cout << "Test complete!\n";
+	//Test2Lab();
+	//Test12Lab();
 	//return 0;
-	//Внешняя многофазная
 	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };
 	std::vector<int> data2{ 1,2,3,4,5,6,7,8,9,10 };
@@ -59,7 +71,7 @@ int main()
 	std::vector<int> data4{ 32,95,16,82,24,66,35,19,75,54,40,43,93,68 };
 	std::vector<int> data5{ 1,3,2,1,2,3,4,5,6,9 };
 
-	std::function<void(std::vector<int>&)> func = asd::lab11;
+	std::function<void(std::vector<int>&)> func = asd::lab10;
 
 	func(data1);
 	func(data2);
