@@ -439,30 +439,21 @@ namespace asd
 		std::filesystem::remove_all("./tempDir");
 	}
 
-	void lab15(std::string str)
+	bool IsStrContainsChar(char* chars, char chr)
 	{
-		std::vector<int> temp;
-		for (size_t i = 0; i < str.size(); i++)
+		for (size_t i = 0; chars[i] != '\0'; i++)
 		{
-
+			if (chars[i] == chr)
+				return true;
 		}
 
+		return false;
 	}
 
 	void lab2(std::string& str)
 	{
-		auto contain = [](char* chars, char chr)
-			{
-				for (size_t i = 0; chars[i] != '\0'; i++)
-				{
-					if (chars[i] == chr)
-						return true;
-				}
 
-				return false;
-			};
-
-		auto GetNum = [&contain](std::string& str, size_t& index)
+		auto GetNum = [](std::string& str, size_t& index)
 			{
 				std::string result;
 				if (str[index] == '-')
@@ -470,7 +461,8 @@ namespace asd
 					result += '-';
 					++index;
 				}
-				while (contain("0123456789", str[index]))
+				'0'; '9';
+				while (str[index] >= 48 && str[index] <= 57)
 				{
 					result += str[index];
 					++index;
@@ -577,7 +569,7 @@ namespace asd
 			if (main[i] == ' ')
 				continue;
 
-			if (!(main[i] == '-' && main[i + 1] == ' ') && !contain("*/+", main[i]))
+			if (!(main[i] == '-' && main[i + 1] == ' ') && !IsStrContainsChar("*/+", main[i]))
 			{
 				num1 = std::stoi(GetNum(main, i));
 				temp.Push(num1);
@@ -610,5 +602,63 @@ namespace asd
 
 		}
 		std::cout << *temp.Top();
+	}
+
+	std::vector<int> convertStrToBinTree(std::string& str)
+	{
+		std::vector<int> tree(100);
+
+		size_t currentNumIndex = 0;
+		int currentNum = 0;
+
+		auto writeNum = [&tree, &currentNumIndex, &currentNum](size_t newIndex)
+			{
+				if (currentNumIndex >= tree.size())
+					tree.resize(currentNumIndex * 2);
+				if (currentNum)
+				{
+					tree[currentNumIndex] = currentNum;
+					currentNum = 0;
+				}
+				currentNumIndex = newIndex;
+			};
+
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			if (str[i] >= '0' && str[i] <= '9')
+			{
+				currentNum = currentNum * 10 + (str[i] - 48);
+				continue;
+			}
+
+			if (str[i] == '(')
+			{
+				writeNum(2 * currentNumIndex + 1);
+				continue;
+			}
+
+			if (str[i] == ',')
+			{
+				writeNum(currentNumIndex + 1);
+				continue;
+			}
+
+			if (str[i] == ')')
+			{
+				writeNum((currentNumIndex - 2) / 2);
+				continue;
+			}
+		}
+		return tree;
+	}
+
+	void lab15(std::string& str)
+	{
+		std::vector<int> tree = convertStrToBinTree(str);
+		for (size_t i = 0; i < tree.size(); i++)
+		{
+			std::cout << tree[i] << ' ';
+		}
+
 	}
 }
