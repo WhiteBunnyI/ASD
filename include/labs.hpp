@@ -652,6 +652,42 @@ namespace asd
 		return tree;
 	}
 
+	//прямой
+	void Direct(std::vector<int>& tree, size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+		std::cout << tree[index] << ' ';
+
+		Direct(tree, index * 2 + 1);
+		Direct(tree, index * 2 + 2);
+	}
+
+	//центральный
+	void Center(std::vector<int>& tree, size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+
+		Center(tree, index * 2 + 1);
+
+		std::cout << tree[index] << ' ';
+
+		Center(tree, index * 2 + 2);
+	}
+
+	void End(std::vector<int>& tree, size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+
+		End(tree, 2 * index + 1);
+		End(tree, 2 * index + 2);
+
+		std::cout << tree[index] << ' ';
+	}
+
+	//Рекурсивные обходы (прямой, центральный, концевой)
 	void lab15(std::string& str)
 	{
 		std::vector<int> tree = convertStrToBinTree(str);
@@ -659,6 +695,22 @@ namespace asd
 		{
 			std::cout << tree[i] << ' ';
 		}
+		std::cout << std::endl;
+		Direct(tree);
+		std::cout << std::endl;
+		Center(tree);
+		std::cout << std::endl;
+		End(tree);
+		std::cout << std::endl;
+	}
 
+	//Нерекурсивный обход (прямой)
+	void lab16(std::string& str)
+	{
+		std::vector<int> tree = convertStrToBinTree(str);
+		for (size_t i = 0; i < tree.size(); i++)
+		{
+			std::cout << tree[i] << ' ';
+		}
 	}
 }
