@@ -652,6 +652,22 @@ namespace asd
 		return tree;
 	}
 
+	void printTree(std::vector<int>& tree)
+	{
+		Stack<std::string> stack;
+		Queue<size_t> q;
+
+		while (q.Get())
+		{
+			size_t s = q.Size();
+			std::string temp;
+			for (size_t i = 0; i < s; i++)
+			{
+				temp += tree[i];
+			}
+		}
+	}
+
 	//прямой
 	void Direct(std::vector<int>& tree, size_t index = 0)
 	{
@@ -708,9 +724,40 @@ namespace asd
 	void lab16(std::string& str)
 	{
 		std::vector<int> tree = convertStrToBinTree(str);
-		for (size_t i = 0; i < tree.size(); i++)
+		//for (size_t i = 0; i < tree.size(); i++)
+		//{
+		//	std::cout << tree[i] << ' ';
+		//}
+		//std::cout << std::endl;
+
+		Stack<size_t> needToCheck;
+		needToCheck.Push(0);
+
+		while (needToCheck.Top())
 		{
-			std::cout << tree[i] << ' ';
+			size_t index = *needToCheck.Top();
+			needToCheck.Pop();
+
+			if (!tree[index]) 
+				continue;
+
+			std::cout << tree[index] << ' ';
+
+			size_t next = 2 * index + 2;
+			if (next < tree.size())
+				needToCheck.Push(next);
+
+			--next;
+			needToCheck.Push(next);
+				
 		}
+		std::cout << std::endl;
+		
+	}
+
+	void lab17(std::string& str)
+	{
+		std::vector<int> tree = convertStrToBinTree(str);
+
 	}
 }
