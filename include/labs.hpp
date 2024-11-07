@@ -273,8 +273,8 @@ namespace asd
 				size_t right = left + i;			//левая граница правого массива
 				size_t leftEnd = right;
 				size_t rightEnd = right + i;
-				bool rightValid = right != rightEnd && right < count;
-				bool leftValid = left != leftEnd && left < count;
+				bool leftValid = left != leftEnd && left < count;		//Проверка границ левого массива
+				bool rightValid = right != rightEnd && right < count;	//Проверка границ правого массива
 				while (rightValid || leftValid)
 				{
 					rightValid = right != rightEnd && right < count;
@@ -360,7 +360,7 @@ namespace asd
 			}
 
 			temp.resize(count);
-			lab10(temp);
+			lab11(temp);
 			out.open("./tempDir/0temp" + std::to_string(current));
 
 			for (size_t i = 0; i < count; i++)
@@ -450,6 +450,178 @@ namespace asd
 		return false;
 	}
 
+	
+
+	std::vector<int> convertStrToBinTree(std::string& str)
+	{
+		std::vector<int> tree(100);
+
+		size_t currentNumIndex = 0;
+		int currentNum = 0;
+
+		auto writeNum = [&tree, &currentNumIndex, &currentNum](size_t newIndex)
+			{
+				if (currentNumIndex >= tree.size())
+					tree.resize(currentNumIndex * 2);
+				if (currentNum)
+				{
+					tree[currentNumIndex] = currentNum;
+					currentNum = 0;
+				}
+				currentNumIndex = newIndex;
+			};
+
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			if (str[i] >= '0' && str[i] <= '9')
+			{
+				currentNum = currentNum * 10 + (str[i] - 48);
+				continue;
+			}
+
+			if (str[i] == '(')
+			{
+				writeNum(2 * currentNumIndex + 1);
+				continue;
+			}
+
+			if (str[i] == ',')
+			{
+				writeNum(currentNumIndex + 1);
+				continue;
+			}
+
+			if (str[i] == ')')
+			{
+				writeNum((currentNumIndex - 2) / 2);
+				continue;
+			}
+		}
+		return tree;
+	}
+
+	void printTree(std::vector<int>& tree, std::size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+		std::cout << tree[index];
+		index = index * 2 + 1;
+		bool isValid = (index + 1) < tree.size();
+		bool isLeft = tree[index];
+		bool isRight = tree[index + 1];
+		bool isHas = isValid && (isLeft || isRight);
+
+		if(isHas)
+			std::cout << '(';
+
+		if (isLeft)
+		{
+			printTree(tree, index);
+		}
+
+		if (isHas)
+			std::cout << ',';
+
+		++index;
+		if (isRight)
+		{
+			printTree(tree, index);
+		}
+
+		if (isHas)
+		{
+			std::cout << ')';
+		}
+	}
+
+	//прямой
+	void Direct(std::vector<int>& tree, size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+		std::cout << tree[index] << ' ';
+
+		Direct(tree, index * 2 + 1);
+		Direct(tree, index * 2 + 2);
+	}
+
+	//центральный
+	void Center(std::vector<int>& tree, size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+
+		Center(tree, index * 2 + 1);
+
+		std::cout << tree[index] << ' ';
+
+		Center(tree, index * 2 + 2);
+	}
+
+	//Концевой
+	void End(std::vector<int>& tree, size_t index = 0)
+	{
+		if (tree[index] == 0)
+			return;
+
+		End(tree, 2 * index + 1);
+		End(tree, 2 * index + 2);
+
+		std::cout << tree[index] << ' ';
+	}
+
+	//Рекурсивные обходы (прямой, центральный, концевой)
+	void lab15(std::string& str)
+	{
+		std::vector<int> tree = convertStrToBinTree(str);
+		for (size_t i = 0; i < tree.size(); i++)
+		{
+			std::cout << tree[i] << ' ';
+		}
+		std::cout << std::endl;
+		Direct(tree);
+		std::cout << std::endl;
+		Center(tree);
+		std::cout << std::endl;
+		End(tree);
+		std::cout << std::endl;
+	}
+
+	//Нерекурсивный обход (прямой)
+	void lab16(std::string& str)
+	{
+		std::vector<int> tree = convertStrToBinTree(str);
+		//for (size_t i = 0; i < tree.size(); i++)
+		//{
+		//	std::cout << tree[i] << ' ';
+		//}
+		//std::cout << std::endl;
+
+		Stack<size_t> needToCheck;
+		needToCheck.Push(0);
+
+		while (needToCheck.Top())
+		{
+			size_t index = *needToCheck.Top();
+			needToCheck.Pop();
+
+			if (!tree[index]) 
+				continue;
+
+			std::cout << tree[index] << ' ';
+
+			size_t next = 2 * index + 2;
+			if (next < tree.size())
+				needToCheck.Push(next);
+
+			--next;
+			needToCheck.Push(next);
+				
+		}
+		std::cout << std::endl;
+		
+	}
+	//-------------------------------------------------------------------------------------------
 	void lab2(std::string& str)
 	{
 
@@ -506,7 +678,7 @@ namespace asd
 
 			case '+':
 			case '-':
-				if (i == 0 || str[i-1] == '(')
+				if (i == 0 || str[i - 1] == '(')
 				{
 					main += GetNum(str, i) + " ";
 					--i;
@@ -526,7 +698,7 @@ namespace asd
 				break;
 
 			case '(':
-				
+
 				stack.Push(str[i]);
 				break;
 
@@ -604,160 +776,109 @@ namespace asd
 		std::cout << *temp.Top();
 	}
 
-	std::vector<int> convertStrToBinTree(std::string& str)
+	std::string convertBinTreeToStr(std::vector<int>& tree)
 	{
-		std::vector<int> tree(100);
-
-		size_t currentNumIndex = 0;
-		int currentNum = 0;
-
-		auto writeNum = [&tree, &currentNumIndex, &currentNum](size_t newIndex)
-			{
-				if (currentNumIndex >= tree.size())
-					tree.resize(currentNumIndex * 2);
-				if (currentNum)
-				{
-					tree[currentNumIndex] = currentNum;
-					currentNum = 0;
-				}
-				currentNumIndex = newIndex;
-			};
-
-		for (size_t i = 0; i < str.size(); i++)
-		{
-			if (str[i] >= '0' && str[i] <= '9')
-			{
-				currentNum = currentNum * 10 + (str[i] - 48);
-				continue;
-			}
-
-			if (str[i] == '(')
-			{
-				writeNum(2 * currentNumIndex + 1);
-				continue;
-			}
-
-			if (str[i] == ',')
-			{
-				writeNum(currentNumIndex + 1);
-				continue;
-			}
-
-			if (str[i] == ')')
-			{
-				writeNum((currentNumIndex - 2) / 2);
-				continue;
-			}
-		}
-		return tree;
-	}
-
-	void printTree(std::vector<int>& tree)
-	{
-		Stack<std::string> stack;
-		Queue<size_t> q;
-
-		while (q.Get())
-		{
-			size_t s = q.Size();
-			std::string temp;
-			for (size_t i = 0; i < s; i++)
-			{
-				temp += tree[i];
-			}
-		}
-	}
-
-	//прямой
-	void Direct(std::vector<int>& tree, size_t index = 0)
-	{
-		if (tree[index] == 0)
-			return;
-		std::cout << tree[index] << ' ';
-
-		Direct(tree, index * 2 + 1);
-		Direct(tree, index * 2 + 2);
-	}
-
-	//центральный
-	void Center(std::vector<int>& tree, size_t index = 0)
-	{
-		if (tree[index] == 0)
-			return;
-
-		Center(tree, index * 2 + 1);
-
-		std::cout << tree[index] << ' ';
-
-		Center(tree, index * 2 + 2);
-	}
-
-	void End(std::vector<int>& tree, size_t index = 0)
-	{
-		if (tree[index] == 0)
-			return;
-
-		End(tree, 2 * index + 1);
-		End(tree, 2 * index + 2);
-
-		std::cout << tree[index] << ' ';
-	}
-
-	//Рекурсивные обходы (прямой, центральный, концевой)
-	void lab15(std::string& str)
-	{
-		std::vector<int> tree = convertStrToBinTree(str);
-		for (size_t i = 0; i < tree.size(); i++)
-		{
-			std::cout << tree[i] << ' ';
-		}
-		std::cout << std::endl;
-		Direct(tree);
-		std::cout << std::endl;
-		Center(tree);
-		std::cout << std::endl;
-		End(tree);
-		std::cout << std::endl;
-	}
-
-	//Нерекурсивный обход (прямой)
-	void lab16(std::string& str)
-	{
-		std::vector<int> tree = convertStrToBinTree(str);
-		//for (size_t i = 0; i < tree.size(); i++)
-		//{
-		//	std::cout << tree[i] << ' ';
-		//}
-		//std::cout << std::endl;
-
-		Stack<size_t> needToCheck;
-		needToCheck.Push(0);
-
-		while (needToCheck.Top())
-		{
-			size_t index = *needToCheck.Top();
-			needToCheck.Pop();
-
-			if (!tree[index]) 
-				continue;
-
-			std::cout << tree[index] << ' ';
-
-			size_t next = 2 * index + 2;
-			if (next < tree.size())
-				needToCheck.Push(next);
-
-			--next;
-			needToCheck.Push(next);
-				
-		}
-		std::cout << std::endl;
-		
+		return "";
 	}
 
 	void lab17(std::string& str)
 	{
 		std::vector<int> tree = convertStrToBinTree(str);
+		int command = 4;
 
+		while (true)
+		{
+			size_t key;
+			size_t index;
+			int root;
+			Stack<size_t> stack;
+
+			system("cls");
+			switch (command)
+			{
+			case 1:
+				std::cout << "Введите ключ для поиска: ";
+				std::cin >> key;
+				std::cout << std::endl;
+				if (key >= tree.size() || !tree[key])
+				{
+					std::cout << "Вершина не найдена\n";
+					break;
+				}
+				std::cout << "Вершина найдена: " << tree[key] << std::endl;
+				break;
+
+			case 2:
+				std::cout << "Введите элемент для добавления: ";
+				std::cin >> root;
+				std::cout << "\nВведите ключ вершины, к которому необходимо добавить элемент: ";
+				std::cin >> key;
+				std::cout << std::endl;
+				index = key * 2 + 1;
+
+				if (index > tree.size())
+					tree.resize(index);
+
+				if (tree[index] && tree[index + 1])
+				{
+					std::cout << "Невозможно добавить данный элемент!\n";
+					break;
+				}
+
+				if (!tree[index])
+					tree[index] = root;
+				tree[index + 1] = root;
+
+				std::cout << "Элемент был успешно добавлен!\n";
+
+				break;
+
+			case 3:
+				std::cout << "Введите ключ вершины для удаления: ";
+				std::cin >> key;
+				std::cout << std::endl;
+
+				if (!tree[key])
+				{
+					std::cout << "Вершины не существует!\n";
+					break;
+				}
+
+				stack.Push(key);
+				while (stack.Top())
+				{
+					index = *stack.Top();
+					stack.Pop();
+					if (!tree[index])
+						continue;
+					tree[index] = 0;
+					stack.Push(index * 2 + 1);
+					stack.Push(index * 2 + 2);
+				}
+				std::cout << "Вершина была удалена!\n";
+				break;
+
+			case 4:
+				printTree(tree);
+				std::cout << std::endl;
+				break;
+
+			case 5:
+				printTree(tree);
+				std::cout << std::endl;
+				system("exit");
+				return;
+
+			default:
+				break;
+			}
+
+			std::cout << "\nВведите команду:\n1 (Поиск)\n2 (Добавить)\n3 (Удалить)\n4 (Вывести дерево)\n5 (Выйти)\n\n";
+			std::cin >> command;
+
+
+			
+
+		}
 	}
 }

@@ -69,14 +69,21 @@ void Test16Lab()
 	asd::lab16(str);
 }
 
+void Test17Lab()
+{
+	std::string str = "8(3(1,6(4,7)),10(,14(13,)))";
+	asd::lab17(str);
+}
+
 int main()
 {
 	std::setlocale(LC_ALL, "rus");
 
 	//Test2Lab();
 	//Test12Lab();
-	Test15Lab();
-	Test16Lab();
+	//Test15Lab();
+	//Test16Lab();
+	Test17Lab();
 	return 0;
 	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };
