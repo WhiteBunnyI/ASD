@@ -450,8 +450,6 @@ namespace asd
 		return false;
 	}
 
-	
-
 	std::vector<int> convertStrToBinTree(std::string& str)
 	{
 		std::vector<int> tree(100);
@@ -498,40 +496,6 @@ namespace asd
 			}
 		}
 		return tree;
-	}
-
-	void printTree(std::vector<int>& tree, std::size_t index = 0)
-	{
-		if (tree[index] == 0)
-			return;
-		std::cout << tree[index];
-		index = index * 2 + 1;
-		bool isValid = (index + 1) < tree.size();
-		bool isLeft = tree[index];
-		bool isRight = tree[index + 1];
-		bool isHas = isValid && (isLeft || isRight);
-
-		if(isHas)
-			std::cout << '(';
-
-		if (isLeft)
-		{
-			printTree(tree, index);
-		}
-
-		if (isHas)
-			std::cout << ',';
-
-		++index;
-		if (isRight)
-		{
-			printTree(tree, index);
-		}
-
-		if (isHas)
-		{
-			std::cout << ')';
-		}
 	}
 
 	//прямой
@@ -720,8 +684,13 @@ namespace asd
 				break;
 
 			default:
-				main += GetNum(str, i) + " ";
-				--i;
+				if (IsStrContainsChar("0123456789", str[i]))
+				{
+					main += GetNum(str, i) + " ";
+					--i;
+					break;
+				}
+				throw std::runtime_error("Unknown operator");
 				break;
 			}
 		}
@@ -760,6 +729,8 @@ namespace asd
 				break;
 
 			case '/':
+				if (!num2)
+					throw std::runtime_error("Division by zero");
 				temp.Push(num1 / num2);
 				break;
 
@@ -776,16 +747,107 @@ namespace asd
 		std::cout << *temp.Top();
 	}
 
-	std::string convertBinTreeToStr(std::vector<int>& tree)
+	void printTreeStr(std::vector<int>& tree, std::size_t index = 0)
 	{
-		return "";
+		if (tree[index] == 0)
+			return;
+		std::cout << tree[index];
+		index = index * 2 + 1;
+		bool isValid = (index + 1) < tree.size();
+		bool isLeft = tree[index];
+		bool isRight = tree[index + 1];
+		bool isHas = isValid && (isLeft || isRight);
+
+		if (isHas)
+			std::cout << '(';
+
+		if (isLeft)
+		{
+			printTreeStr(tree, index);
+		}
+
+		if (isHas)
+			std::cout << ',';
+
+		++index;
+		if (isRight)
+		{
+			printTreeStr(tree, index);
+		}
+
+		if (isHas)
+		{
+			std::cout << ')';
+		}
+	}
+
+	size_t GetTreeDepth(std::vector<int>& tree, size_t index = 0, size_t depth = 0)
+	{
+		if (tree[index] == 0)
+			return depth;
+		size_t dL, dR;
+		++depth;
+		dL = GetTreeDepth(tree, index * 2 + 1, depth);
+		dR = GetTreeDepth(tree, index * 2 + 2, depth);
+		return dL > dR ? dL : dR;
+	}
+
+	void OutTree(std::vector<int>& tree, std::vector<std::string>& out, size_t index = 0, size_t depth = 0)
+	{
+		if (tree[index] == 0)
+			return;
+
+		++depth;
+		OutTree(tree, out, 2 * index + 1, depth);
+		int under = out[depth].size();
+		out[depth] += "   ";
+		OutTree(tree, out, 2 * index + 2, depth);
+		out[depth] += ' ';
+		int cur = out[depth - 1].size();
+		for (int i = 0; i < under - cur; i++)
+		{
+			out[depth - 1] += ' ';
+		}
+
+		out[depth - 1] += std::to_string(tree[index]);
+	}
+
+
+	void printTree(std::vector<int>& tree)
+	{
+		size_t depth = GetTreeDepth(tree);
+		std::vector<std::string> out;
+
+		for (size_t i = 0; i <= depth; i++)
+		{
+			out.push_back("");
+		}
+
+		OutTree(tree, out);
+
+		for (int i = 0; i < depth; i++)
+		{
+			std::cout << out[i] << std::endl;
+		}
+
+		
+
+		std::cout << std::endl;
+		std::cout << "3   4 5   62   \n";
+		std::cout << " \\ /   \\ /  \n";
+		std::cout << "  7     8\n";
+		std::cout << std::endl;
+
+		std::cout << "";
+
 	}
 
 	void lab17(std::string& str)
 	{
 		std::vector<int> tree = convertStrToBinTree(str);
 		int command = 4;
-
+		printTree(tree);
+		return;
 		while (true)
 		{
 			size_t key;
@@ -794,6 +856,15 @@ namespace asd
 			Stack<size_t> stack;
 
 			system("cls");
+			if (command == 4)
+			{
+				printTreeStr(tree);
+				std::cout << std::endl;
+			}
+
+			std::cout << "\nВведите команду:\n1 (Поиск)\n2 (Добавить)\n3 (Удалить)\n4 (Вывести дерево)\n5 (Выйти)\n\n";
+			std::cin >> command;
+
 			switch (command)
 			{
 			case 1:
@@ -858,13 +929,8 @@ namespace asd
 				std::cout << "Вершина была удалена!\n";
 				break;
 
-			case 4:
-				printTree(tree);
-				std::cout << std::endl;
-				break;
-
 			case 5:
-				printTree(tree);
+				printTreeStr(tree);
 				std::cout << std::endl;
 				system("exit");
 				return;
@@ -872,12 +938,32 @@ namespace asd
 			default:
 				break;
 			}
-
-			std::cout << "\nВведите команду:\n1 (Поиск)\n2 (Добавить)\n3 (Удалить)\n4 (Вывести дерево)\n5 (Выйти)\n\n";
-			std::cin >> command;
-
-
 			
+
+		}
+	}
+
+	void lab13(char* filename)
+	{
+		auto hashFunc = [](char* word)
+			{
+				size_t ind = 0;
+				while (word[ind])
+				{
+					std::cout << word[ind];
+					++ind;
+				}
+			};
+
+		std::ifstream input(filename);
+
+		char word[200];
+		while (!input.eof())
+		{
+			input >> word;
+			std::cout << word << std::endl;
+			hashFunc(word);
+			std::cout << std::endl;
 
 		}
 	}

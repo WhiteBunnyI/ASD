@@ -53,8 +53,15 @@ void Test12Lab()
 
 void Test2Lab()
 {
-	std::string str = "-20+7*(3/9)-(-5)*(0-1)=";
-	asd::lab2(str);
+	std::string str = "-20+7*(3/9)-(-5)*(0-1)*(10/0)=";
+	try
+	{
+		asd::lab2(str);
+	}
+	catch (const std::exception& exp)
+	{
+		std::cerr << exp.what() << std::endl;
+	}
 }
 
 void Test15Lab()
@@ -75,6 +82,11 @@ void Test17Lab()
 	asd::lab17(str);
 }
 
+void Test13Lab()
+{
+	asd::lab13("words.txt");
+}
+
 int main()
 {
 	std::setlocale(LC_ALL, "rus");
@@ -83,7 +95,8 @@ int main()
 	//Test12Lab();
 	//Test15Lab();
 	//Test16Lab();
-	Test17Lab();
+	//Test17Lab();
+	Test13Lab();
 	return 0;
 	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };

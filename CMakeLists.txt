@@ -6,6 +6,7 @@ set(PROJECT_NAME ASD) # задать значение PROJECT_NAME
 project("${PROJECT_NAME}")           # установить имя проекта
 
 file(COPY "sorting.txt" DESTINATION "/")
+file(COPY "words.txt" DESTINATION "/")
 
 set(CMAKE_CXX_STANDARD 17)			 # устанавливаем 17 стандарт языка
 set(CMAKE_CXX_EXTENSIONS OFF)
