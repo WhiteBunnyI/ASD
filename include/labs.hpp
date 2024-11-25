@@ -900,7 +900,8 @@ namespace asd
 
 				if (!tree[index])
 					tree[index] = root;
-				tree[index + 1] = root;
+				else if(!tree[index + 1])
+					tree[index + 1] = root;
 
 				std::cout << "Ёлемент был успешно добавлен!\n";
 
