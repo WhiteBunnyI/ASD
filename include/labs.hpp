@@ -846,8 +846,8 @@ namespace asd
 	{
 		std::vector<int> tree = convertStrToBinTree(str);
 		int command = 4;
-		printTree(tree);
-		return;
+		/*printTree(tree);
+		return;*/
 		while (true)
 		{
 			size_t key;
@@ -855,22 +855,23 @@ namespace asd
 			int root;
 			Stack<size_t> stack;
 
-			system("cls");
 			if (command == 4)
 			{
+				system("cls");
 				printTreeStr(tree);
 				std::cout << std::endl;
 			}
 
 			std::cout << "\nВведите команду:\n1 (Поиск)\n2 (Добавить)\n3 (Удалить)\n4 (Вывести дерево)\n5 (Выйти)\n\n";
 			std::cin >> command;
-
+			
 			switch (command)
 			{
 			case 1:
 				std::cout << "Введите ключ для поиска: ";
 				std::cin >> key;
 				std::cout << std::endl;
+				system("cls");
 				if (key >= tree.size() || !tree[key])
 				{
 					std::cout << "Вершина не найдена\n";
@@ -885,6 +886,7 @@ namespace asd
 				std::cout << "\nВведите ключ вершины, к которому необходимо добавить элемент: ";
 				std::cin >> key;
 				std::cout << std::endl;
+				system("cls");
 				index = key * 2 + 1;
 
 				if (index > tree.size())
@@ -908,6 +910,7 @@ namespace asd
 				std::cout << "Введите ключ вершины для удаления: ";
 				std::cin >> key;
 				std::cout << std::endl;
+				system("cls");
 
 				if (!tree[key])
 				{
@@ -930,6 +933,7 @@ namespace asd
 				break;
 
 			case 5:
+				system("cls");
 				printTreeStr(tree);
 				std::cout << std::endl;
 				system("exit");

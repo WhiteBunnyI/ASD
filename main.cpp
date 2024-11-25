@@ -95,8 +95,8 @@ int main()
 	//Test12Lab();
 	//Test15Lab();
 	//Test16Lab();
-	//Test17Lab();
-	Test13Lab();
+	Test17Lab();
+	//Test13Lab();
 	return 0;
 	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };
