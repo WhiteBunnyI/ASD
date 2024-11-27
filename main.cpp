@@ -87,6 +87,11 @@ void Test13Lab()
 	asd::lab13("words.txt");
 }
 
+void Test14Lab()
+{
+	asd::lab14("words.txt");
+}
+
 int main()
 {
 	std::setlocale(LC_ALL, "rus");
@@ -95,8 +100,9 @@ int main()
 	//Test12Lab();
 	//Test15Lab();
 	//Test16Lab();
-	Test17Lab();
+	//Test17Lab();
 	//Test13Lab();
+	Test14Lab();
 	return 0;
 	
 	std::vector<int> data1{ 2,4,5,1,10,3,6,8,7,9 };
